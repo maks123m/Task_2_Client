@@ -4,34 +4,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script defer src="js/vue.js"></script>
+    <script defer src="js/main.js"></script>
     <link rel="stylesheet" href="./css/styles.css">
+    </link>
     <title>Task 2</title>
 </head>
 
 <body>
+
     <div id="app">
         <div class="columns">
+
             <div class="column" id="col1">
-                <h3>Колонка 1 <span id="col1-count">0</span>/3</h3>
-                <div id="col1-cards"></div>
-                <button id="add-col1">+</button>
+                <h3>Колонка 1 <span>{{ column1Cards.length }} /3</span></h3>
+                <div v-for="card in column1Cards" :key="card.id" id="col1-cards">
+                    <h4>{{ card.title }}</h4>
+                    <div v-for="(item, idx) in card.items" :key="idx">
+                        <input type="checkbox" v-model="item.completed">
+                        <span :class="{ done: item.completed }">{{ item.text }}</span>
+                    </div>
+                    <div>Прогресс: {{ card.progress }}%</div>
+                </div>
+                <button id="add-col1" @click="openModal(1)">+</button>
             </div>
 
             <div class="column" id="col2">
-                <h3>Колонка 2 <span id="col2-count">0</span>/5</h3>
-                <div id="col2-cards"></div>
-                <button id="add-col2">+</button>
+                <h3>Колонка 2 <span>{{ column2Cards.length }}/5</span></h3>
+                <div v-for="card in column2Cards" :key="card.id" class="card">
+                    <h4>{{ card.title }}</h4>
+                    <div v-for="(item, idx) in card.items" :key="idx">
+                        <input type="checkbox" v-model="item.completed">
+                        <span :class="{ done: item.completed }">{{ item.text }}</span>
+                    </div>
+                    <div>Прогресс: {{ card.progress }}%</div>
+                </div>
+                <button id="add-col2" @click="openModal(2)">+</button>
             </div>
 
             <div class="column" id="col3">
                 <h3>Колонка 3</h3>
-                <div id="col3-cards"></div>
-                <button id="add-col3">+</button>
+                <div v-for="card in column3Cards" :key="card.id" class="card">
+                    <h4>{{ card.title }}</h4>
+                    <div v-for="(item, idx) in card.items" :key="idx">
+                        <input type="checkbox" v-model="item.completed" disabled>
+                        <span :class="{ done: item.completed }">{{ item.text }}</span>
+                    </div>
+                    <div>Прогресс: {{ card.progress }}%</div>
+                    <div v-if="card.completed">Завершена: {{ card.completed }}</div>
+                </div>
+                <button id="add-col3" @click="openModal(3)">+</button>
+            </div>
+
+        </div>
+
+        <div class="modal" v-if="showModal">
+            <div class="modal-content">
+                <h3>Новая карточка</h3>
+
+                <label>Заголовок:</label>
+                <input type="text" v-model="newCard.title" placeholder="Введите заголовок">
+
+                <label>Пункты (мин. 3, макс. 5):</label>
+                <div v-for="(item, index) in newCard.items" :key="index">
+                    <input type="text" v-model="item.text" :placeholder="'Пункт ' + (index + 1)">
+                </div>
+
+                <div class="modal-buttons">
+                    <button @click="addItem" v-if="newCard.items.length < 5">+ Добавить пункт</button>
+                    <button @click="removeItem" v-if="newCard.items.length > 3">- Удалить пункт</button>
+                </div>
+
+                <div class="modal-buttons">
+                    <button @click="createCard">Создать</button>
+                    <button @click="closeModal">Отмена</button>
+                </div>
             </div>
         </div>
+
     </div>
 
-    <script src="js/main.js"></script>
 </body>
 
 </html>
