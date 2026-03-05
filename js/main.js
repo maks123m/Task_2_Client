@@ -80,6 +80,25 @@ new Vue({
 
             this.cards.push(card);
             this.closeModal();
+        },
+
+        updateProgress(card) {
+            const completedCount = card.items.filter(item => item.completed).length;
+            const totalCount = card.items.length;
+            const progress = Math.round((completedCount / totalCount) * 100);
+            card.progress = progress;
+
+            if (card.column === 1) {
+                if (progress > 50 && progress < 100) {
+                    card.column = 2;
+                } else if (progress === 100) {
+                    card.column = 3;
+                    card.completed = new Date().toLocaleString();
+                }
+            } else if (card.column === 2 && progress === 100) {
+                card.column = 3;
+                card.completed = new Date().toLocaleString();
+            }
         }
     },
 

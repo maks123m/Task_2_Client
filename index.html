@@ -21,7 +21,7 @@
                 <div v-for="card in column1Cards" :key="card.id" id="col1-cards">
                     <h4>{{ card.title }}</h4>
                     <div v-for="(item, idx) in card.items" :key="idx">
-                        <input type="checkbox" v-model="item.completed">
+                        <input type="checkbox" v-model="item.completed" @change="updateProgress(card)">
                         <span :class="{ done: item.completed }">{{ item.text }}</span>
                     </div>
                     <div>Прогресс: {{ card.progress }}%</div>
@@ -34,7 +34,7 @@
                 <div v-for="card in column2Cards" :key="card.id" class="card">
                     <h4>{{ card.title }}</h4>
                     <div v-for="(item, idx) in card.items" :key="idx">
-                        <input type="checkbox" v-model="item.completed">
+                        <input type="checkbox" v-model="item.completed" @change="updateProgress(card)">
                         <span :class="{ done: item.completed }">{{ item.text }}</span>
                     </div>
                     <div>Прогресс: {{ card.progress }}%</div>
@@ -47,7 +47,7 @@
                 <div v-for="card in column3Cards" :key="card.id" class="card">
                     <h4>{{ card.title }}</h4>
                     <div v-for="(item, idx) in card.items" :key="idx">
-                        <input type="checkbox" v-model="item.completed" disabled>
+                        <input type="checkbox" v-model="item.completed" @change="updateProgress(card)">
                         <span :class="{ done: item.completed }">{{ item.text }}</span>
                     </div>
                     <div>Прогресс: {{ card.progress }}%</div>
