@@ -24,11 +24,26 @@ new Vue({
         },
         column3Cards() {
             return this.cards.filter(card => card.column === 3);
+        },
+
+        isColumn1Blocked() {
+            const column2Full = this.column2Cards.length >= 5;
+            const hasCardAbove50InColumn1 = this.column1Cards.some(card => card.progress > 50 && card.progress < 100);
+            return column2Full && hasCardAbove50InColumn1;
         }
     },
 
     methods: {
         openModal(column) {
+            if (column === 1 && this.column1Cards.length >= 3) {
+                alert('Здесь нельзя больше трех карточек');
+                return;
+            }
+            if (column === 2 && this.column2Cards.length >= 5) {
+                alert('Здесь нельзя больше пяти карточек');
+                return;
+            }
+
             this.targetColumn = column;
             this.showModal = true;
         },
@@ -66,6 +81,17 @@ new Vue({
                 return;
             }
 
+            if (this.targetColumn === 1 && this.column1Cards.length >= 3) {
+                alert('В первой колонке максимум 3 карточки');
+                this.closeModal();
+                return;
+            }
+            if (this.targetColumn === 2 && this.column2Cards.length >= 5) {
+                alert('Во второй колонке максимум 5 карточек');
+                this.closeModal();
+                return;
+            }
+
             const card = {
                 id: this.nextId++,
                 title: this.newCard.title,
@@ -79,7 +105,18 @@ new Vue({
             }
 
             this.cards.push(card);
+            this.saveToStorage();
             this.closeModal();
+        },
+
+        checkPendingMoves() {
+            const pendingCards = this.column1Cards.filter(card => card.progress > 50 && card.progress < 100);
+            pendingCards.forEach(card => {
+                if (this.column2Cards.length < 5) {
+                    card.column = 2;
+                }
+            });
+            this.saveToStorage();
         },
 
         updateProgress(card) {
@@ -90,7 +127,9 @@ new Vue({
 
             if (card.column === 1) {
                 if (progress > 50 && progress < 100) {
-                    card.column = 2;
+                    if (this.column2Cards.length < 5) {
+                        card.column = 2;
+                    }
                 } else if (progress === 100) {
                     card.column = 3;
                     card.completed = new Date().toLocaleString();
@@ -98,9 +137,30 @@ new Vue({
             } else if (card.column === 2 && progress === 100) {
                 card.column = 3;
                 card.completed = new Date().toLocaleString();
+                this.checkPendingMoves();
             }
-        }
+            this.saveToStorage();
+        },
+        saveToStorage() {
+            sessionStorage.setItem('notes_app', JSON.stringify({
+                cards: this.cards,
+                nextId: this.nextId
+            }));
+        },
+
+        loadFromStorage() {
+            const saved = sessionStorage.getItem('notes_app');
+            if (saved) {
+                const data = JSON.parse(saved);
+                this.cards = data.cards || [];
+                this.nextId = data.nextId || 1;
+            }
+        },
     },
+
+    mounted() {
+        this.loadFromStorage();
+    }
 
 
 

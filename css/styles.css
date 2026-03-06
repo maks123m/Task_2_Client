@@ -68,3 +68,14 @@
     text-decoration: line-through;
     color: gray;
 }
+
+.column.blocked {
+    opacity: 0.6;
+    background-color: #e0e0e0;
+    pointer-events: none;
+}
+
+.column.blocked button {
+    opacity: 0.3;
+    cursor: not-allowed;
+}

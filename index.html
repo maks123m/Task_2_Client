@@ -16,8 +16,8 @@
     <div id="app">
         <div class="columns">
 
-            <div class="column" id="col1">
-                <h3>Колонка 1 <span>{{ column1Cards.length }} /3</span></h3>
+            <div class="column" id="col1" :class="{ 'blocked': isColumn1Blocked }">
+                <h3>Колонка 1 <br><span>{{ column1Cards.length }}/3</span></h3>
                 <div v-for="card in column1Cards" :key="card.id" id="col1-cards">
                     <h4>{{ card.title }}</h4>
                     <div v-for="(item, idx) in card.items" :key="idx">
@@ -26,11 +26,11 @@
                     </div>
                     <div>Прогресс: {{ card.progress }}%</div>
                 </div>
-                <button id="add-col1" @click="openModal(1)">+</button>
+                <button id="add-col1" @click="openModal(1)" :disabled="isColumn1Blocked">+</button>
             </div>
 
             <div class="column" id="col2">
-                <h3>Колонка 2 <span>{{ column2Cards.length }}/5</span></h3>
+                <h3>Колонка 2 <br><span>{{ column2Cards.length }}/5</span></h3>
                 <div v-for="card in column2Cards" :key="card.id" class="card">
                     <h4>{{ card.title }}</h4>
                     <div v-for="(item, idx) in card.items" :key="idx">
@@ -39,21 +39,19 @@
                     </div>
                     <div>Прогресс: {{ card.progress }}%</div>
                 </div>
-                <button id="add-col2" @click="openModal(2)">+</button>
             </div>
 
             <div class="column" id="col3">
-                <h3>Колонка 3</h3>
+                <h3>Колонка 3 <br>Выполненные</h3>
                 <div v-for="card in column3Cards" :key="card.id" class="card">
                     <h4>{{ card.title }}</h4>
                     <div v-for="(item, idx) in card.items" :key="idx">
-                        <input type="checkbox" v-model="item.completed" @change="updateProgress(card)">
+                        <input type="checkbox" v-model="item.completed" @change="updateProgress(card)" disabled>
                         <span :class="{ done: item.completed }">{{ item.text }}</span>
                     </div>
                     <div>Прогресс: {{ card.progress }}%</div>
                     <div v-if="card.completed">Завершена: {{ card.completed }}</div>
                 </div>
-                <button id="add-col3" @click="openModal(3)">+</button>
             </div>
 
         </div>
