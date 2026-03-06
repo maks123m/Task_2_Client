@@ -1,3 +1,26 @@
+Vue.component('statistics-component', {
+    props: ['completedCards'],
+    template: `
+        <div class="statistics" v-if="completedCards.length >= 5">
+            <h3>Статистика</h3>
+            <p>Всего завершено карточек: {{ completedCards.length }}</p>
+            <p>Среднее количество задач: {{ averageTasks }}</p>
+        </div>
+        <div v-else class="statistics disabled">
+            <h3>Статистика</h3>
+            <p>Завершите еще {{ 5 - completedCards.length }} карточек для статистики</p>
+            <p>Прогресс: {{ completedCards.length }}/5</p>
+        </div>
+    `,
+    computed: {
+        averageTasks() {
+            if (this.completedCards.length < 5) return 0;
+            const total = this.completedCards.reduce((sum, card) => sum + card.items.length, 0);
+            return (total / this.completedCards.length).toFixed(1);
+        }
+    }
+});
+
 new Vue({
     el: '#app',
     data: {

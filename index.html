@@ -14,17 +14,20 @@
 <body>
 
     <div id="app">
+        <statistics-component :completed-cards="column3Cards"></statistics-component>
         <div class="columns">
 
             <div class="column" id="col1" :class="{ 'blocked': isColumn1Blocked }">
                 <h3>Колонка 1 <br><span>{{ column1Cards.length }}/3</span></h3>
-                <div v-for="card in column1Cards" :key="card.id" id="col1-cards">
-                    <h4>{{ card.title }}</h4>
-                    <div v-for="(item, idx) in card.items" :key="idx">
-                        <input type="checkbox" v-model="item.completed" @change="updateProgress(card)">
-                        <span :class="{ done: item.completed }">{{ item.text }}</span>
+                <div id="col1-cards">
+                    <div v-for="card in column1Cards" :key="card.id" class="card">
+                        <h4>{{ card.title }}</h4>
+                        <div v-for="(item, idx) in card.items" :key="idx">
+                            <input type="checkbox" v-model="item.completed" @change="updateProgress(card)">
+                            <span :class="{ done: item.completed }">{{ item.text }}</span>
+                        </div>
+                        <div>Прогресс: {{ card.progress }}%</div>
                     </div>
-                    <div>Прогресс: {{ card.progress }}%</div>
                 </div>
                 <button id="add-col1" @click="openModal(1)" :disabled="isColumn1Blocked">+</button>
             </div>
@@ -56,6 +59,7 @@
 
         </div>
 
+
         <div class="modal" v-if="showModal">
             <div class="modal-content">
                 <h3>Новая карточка</h3>
@@ -79,7 +83,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
 </body>
